@@ -19,12 +19,13 @@ import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 
 const Item = ({to, title, selected, setSelected, icon})=>{
  const theme = useTheme();
+ const colors = tokens(theme.palette.mode)
  return(
-    <MenuItem className="menu-item"
+    <MenuItem
     active={selected === title}
     onClick={()=>setSelected(title)}
     icon={icon}
-    routerLink={<Link to={to}/>}
+    component={<Link to={to}/>}
     >
     <Typography>{title}</Typography>
     </MenuItem>
@@ -35,36 +36,30 @@ const AppSidebar = ()=>{
 const theme = useTheme();
 const colors = tokens(tokens(theme.palette.mode));
 const { collapseSidebar, toggleSidebar, collapsed, toggled, broken, rtl } = useProSidebar();
-
 const [selected, setSelected] = useState("Dashboard");
 
 return(
     <Sidebar
     backgroundColor={theme.palette.primary.main}
-    color={colors.grey[900]}
     >
 <Menu
-renderMenuItemStyles={() => ({
-    '.menu-anchor': {
-          backgroundColor: theme.palette.primary.main,
-          '&:hover': {
-            backgroundColor: theme.palette.primary.accent,
-            color: colors.greenAccent[500]
-          },
-      },
-      '#top-menu-item': {
-        '&:hover': {          backgroundColor: theme.palette.primary.main,
-        },
-    },
-    '.menu-item':{
-        '&.active':{
-            backgroundColor: theme.palette.primary.accent,
-            color: colors.greenAccent[500]
-        }
-      }
-    })}
+menuItemStyles={{
+    button:({active})=>{
+        return {
+          backgroundColor: active?  theme.palette.primary.accent: theme.palette.primary.main,
+          color:active ? colors.greenAccent[500] : colors.grey[900],
+
+      ['&:hover']: {
+        backgroundColor: theme.palette.primary.accent,
+          color:colors.greenAccent[500],
+       }
+        
+    }
+    }
+
+    }}
     >
-    <MenuItem className="menu-item" id="top-menu-item"
+    <MenuItem  id="top-menu-item"
     onClick={()=>collapseSidebar()}
     display="flex"
     icon={<MenuOutlinedIcon/>}
@@ -103,6 +98,7 @@ renderMenuItemStyles={() => ({
                 variant="h5"
                 fontWeight="bold"
                 sx = {{m:"10px 0 0 0"}} 
+                color={colors.grey[900]}
                 >Emelie Chukwuma</Typography>
                 <Typography variant="h5"color={colors.greenAccent[500]}>Engineering Team Lead</Typography>
                 </Box>
@@ -118,11 +114,11 @@ renderMenuItemStyles={() => ({
             setSelected={setSelected}
             icon = {<HomeOutlinedIcon/>}
             />
-            <Typography
+            {!collapsed && (<Typography
             variant="h6"
             color= {colors.grey[700]}
             sx={{m:"15px 0 5px 30px"}}
-            >Data</Typography>
+            >Data</Typography>)}
 
             <Item
             to="/team"
@@ -146,11 +142,11 @@ renderMenuItemStyles={() => ({
             icon = {<ReceiptOutlinedIcon/>}
             />
                 
-            <Typography
+            {!collapsed && (<Typography
             variant="h6"
             color= {colors.grey[700]}
             sx={{m:"15px 0 5px 30px"}}
-            >Pages</Typography>
+            >Pages</Typography>)}
             
             <Item
             to="/form"
@@ -166,13 +162,20 @@ renderMenuItemStyles={() => ({
             setSelected={setSelected}
             icon = {<CalendarTodayOutlinedIcon/>}
             />
+                        <Item
+            to="/faq"
+            title="FAQ"
+            selected={selected}
+            setSelected={setSelected}
+            icon = {<HelpOutlinedIcon/>}
+            />
 
-            <Typography
+            {!collapsed && (<Typography
             variant="h6"
             color= {colors.grey[700]}
             sx={{m:"15px 0 5px 30px"}}
             >
-                Charts</Typography>
+                Charts</Typography>)}
             
             <Item
             to="/bar"
